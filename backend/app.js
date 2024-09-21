@@ -1,15 +1,19 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from "express";
 import { createServer } from "node:http";
 
 import mongoose from "mongoose";
-import {connectToScket} from "./controllers/socketManager.js";
+import {connectToSocket} from "./controllers/socketManager.js";
 
 import cors from "cors";
 import userRoutes from "./routes/users.routes.js";
 
+
 const app = express();
 const server = createServer(app);
-const io = connectToScket(server);
+const io = connectToSocket(server);
 
 
 app.set("port", (process.env.PORT || 8000))
@@ -24,16 +28,12 @@ app.get("/home",(req,res)=>{
 
 const start = async () => {
     // app.set("mongo_user")
-    const connectionDb = await mongoose.connect("mongodb+srv://videoCall:EXbxswVMSqJ9s8Rd@cluster0.hipr6.mongodb.net/")
+    const connectionDb = await mongoose.connect(process.env.REACT_APP_MONGODB_URI)
     console.log(`MONGO Connected DB HOst: ${connectionDb.connection.host}`)
     server.listen(app.get("port"), () => {
         console.log("LISTENIN ON PORT 8000")
     });
 
-
-
 }
-
-
 
 start();
